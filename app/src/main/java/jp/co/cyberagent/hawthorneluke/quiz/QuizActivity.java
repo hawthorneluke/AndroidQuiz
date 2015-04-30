@@ -2,6 +2,7 @@ package jp.co.cyberagent.hawthorneluke.quiz;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.DialogFragment;
@@ -22,7 +23,7 @@ import java.util.Map;
  */
 public class QuizActivity extends AppCompatActivity {
 
-    private static final int WAIT_TIME = 2000; //答えた後、次の問題に移るまでの時間(ms)
+    private static final int WAIT_TIME = 100; //答えた後、次の問題に移るまでの時間(ms)
 
     private TextView mQuestionNumberText; //何問目の問題か
     private TextView mQuestionText; //問題文
@@ -96,26 +97,30 @@ public class QuizActivity extends AppCompatActivity {
             public void run() {
                 QuizData quizData = QuizData.getQuizData();
                 if (quizData == null) {
-                    //スコアを計算
-                    int correctCount = QuizData.getCorrectCount(); //2回無駄に計算させないため
-                    String message = "問題数: " + QuizData.getQuestionCount();
-                    message += "\n正解数: " + correctCount;
-                    message += "\n正解率: " + String.format("%.2f%%", ((double)correctCount / (double)QuizData.getQuestionCount() * 100));
-
-                    //結果のalertFragmentを表示
-                    FragmentManager fm = getSupportFragmentManager();
-                    ScoreDialogFragment dialog = new ScoreDialogFragment();
-                    Bundle args = new Bundle();
-                    args.putString("title", getResources().getString(R.string.score_dialog_title));
-                    args.putString("message", message);
-                    dialog.setArguments(args);
-                    dialog.show(fm, "score_dialog_fragment");
+                    showScore();
                 }
                 else {
                     showQuestionData(quizData); //次の問題を取得して画面に表示する
                 }
             }
         }, WAIT_TIME);
+    }
+
+    private void showScore() {
+        //スコアを計算
+        int correctCount = QuizData.getCorrectCount(); //2回無駄に計算させないため
+        String message = "問題数: " + QuizData.getQuestionCount();
+        message += "\n正解数: " + correctCount;
+        message += "\n正解率: " + String.format("%.2f%%", ((double)correctCount / (double)QuizData.getQuestionCount() * 100));
+
+        //結果のalertFragmentを表示
+        FragmentManager fm = getSupportFragmentManager();
+        ScoreDialogFragment dialog = new ScoreDialogFragment();
+        Bundle args = new Bundle();
+        args.putString("title", getResources().getString(R.string.score_dialog_title));
+        args.putString("message", message);
+        dialog.setArguments(args);
+        dialog.show(fm, "score_dialog_fragment");
     }
 
     private void loadQuizData() {
@@ -182,14 +187,16 @@ public class QuizActivity extends AppCompatActivity {
                     .setPositiveButton(getResources().getString(R.string.score_dialog_go_to_explanation),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
-                                    //TODO 解説へ
+                                    Intent intent = new Intent(getActivity(), ExplanationActivity.class);
+                                    startActivity(intent);
+                                    getActivity().finish(); //解説から戻る時はトップになるように
                                 }
                             }
                     )
                     .setNegativeButton(getResources().getString(R.string.score_dialog_return_to_top),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
-                                    getActivity().finish(); //終わりにする
+                                    getActivity().finish(); //終わりにしてトップに戻る
                                 }
                             }
                     )

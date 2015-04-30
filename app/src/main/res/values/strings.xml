@@ -4,10 +4,12 @@
 
     <string name="action_top_exit">終了</string>
     <string name="action_quiz_end">終了</string>
+    <string name="action_explanation_end">TOPに戻る</string>
 
     <string name="button_start">スタート</string>
 
     <string name="score_dialog_title">結果</string>
     <string name="score_dialog_go_to_explanation">解説へ</string>
-    <string name="score_dialog_return_to_top">トップに戻る</string>
+    <string name="score_dialog_return_to_top">TOPに戻る</string>
+    <string name="title_activity_explanation">ExplanationActivity</string>
 </resources>
