@@ -1,6 +1,11 @@
 package jp.co.cyberagent.hawthorneluke.quiz;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -69,7 +74,20 @@ public class QuizActivity extends AppCompatActivity {
 
         QuizData quizData = QuizData.getQuizData();
         if (quizData == null) {
-            //TODO 結果のalertFragmentを表示
+            //スコアを計算
+            int correctCount = QuizData.getCorrectCount(); //2回無駄に計算させないため
+            String message = "問題数: " + QuizData.getQuestionCount();
+            message += "\n正解数: " + correctCount;
+            message += "\n正解率: " + String.format("%.2f%%", ((double)correctCount / (double)QuizData.getQuestionCount() * 100));
+
+            //結果のalertFragmentを表示
+            FragmentManager fm = getSupportFragmentManager();
+            ScoreDialogFragment dialog = new ScoreDialogFragment();
+            Bundle args = new Bundle();
+            args.putString("title", getResources().getString(R.string.score_dialog_title));
+            args.putString("message", message);
+            dialog.setArguments(args);
+            dialog.show(fm, "score_dialog_fragment");
         }
         else {
             showQuestionData(quizData); //次の問題を取得して画面に表示する
@@ -109,5 +127,49 @@ public class QuizActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public static class ScoreDialogFragment extends DialogFragment {
+
+        private TextView mText;
+
+        public ScoreDialogFragment() {
+            // Empty constructor required for DialogFragment
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            super.onCreateDialog(savedInstanceState);
+
+            String title;
+            String message;
+
+            try {
+                title = getArguments().getString("title");
+                message = getArguments().getString("message");
+            } catch(NullPointerException ex) {
+                throw new InstantiationException("titleかmessageが渡されてない", ex);
+            }
+
+            return new AlertDialog.Builder(getActivity())
+                    .setTitle(title)
+                    .setMessage(message)
+                    .setPositiveButton(getResources().getString(R.string.score_dialog_go_to_explanation),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+
+                                }
+                            }
+                    )
+                    .setNegativeButton(getResources().getString(R.string.score_dialog_return_to_top),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    getActivity().finish();
+                                }
+                            }
+                    )
+                    .create();
+        }
     }
 }
