@@ -22,8 +22,9 @@ public class TopActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_top);
 
-        setTitle(R.string.app_name);
+        setTitle(R.string.app_name); //アクティビティのタイトルバーのタイトルをこのアプリの名前にする
 
+        //スタートボタン
         mButtonStart = (Button)findViewById(R.id.button_start);
         mButtonStart.setOnClickListener(new View.OnClickListener() {
 
