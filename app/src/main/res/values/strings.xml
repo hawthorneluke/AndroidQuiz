@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">"琉玖のクイズ"</string>
+    <string name="title_activity_quiz">琉玖のクイズ</string>
+
+    <string name="action_top_exit">終了</string>
+    <string name="action_quiz_end">終了</string>
+
+    <string name="button_start">スタート</string>
+</resources>
