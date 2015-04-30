@@ -4,13 +4,20 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import java.util.Map;
 
 /**
  * クイズ本体
  */
 public class QuizActivity extends AppCompatActivity {
 
-    QuizData quizData; //現在の問題
+    private TextView mQuestionNumberText; //何問目の問題か
+    private TextView mQuestionText; //問題文
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +28,52 @@ public class QuizActivity extends AppCompatActivity {
             loadQuizData();
         }
 
-        quizData = QuizData.getQuestion(); //１最初の問題を取得
+        mQuestionNumberText = (TextView)findViewById(R.id.text_question_number);
+        mQuestionText = (TextView)findViewById(R.id.text_quiz_question);
+
+        QuizData quizData = QuizData.getQuizData();
+        if (quizData != null) {
+            showQuestionData(QuizData.getQuizData()); //１最初の問題を取得して画面に表示する
+        }
+    }
+
+    private void showQuestionData(QuizData quizData) {
+
+        mQuestionNumberText.setText("第" + (QuizData.getAnsweredCount()+1) + "問"); //何問目かを表示
+        mQuestionText.setText(quizData.getQuestion()); //問題文を表示
+
+        //ボタンとして各答えを画面に追加
+        LinearLayout layout = (LinearLayout) findViewById(R.id.layout_quiz_answer_buttons); //ここに追加
+        layout.removeAllViewsInLayout(); //ボタンが既に追加されていたら全てを消す。
+        for(Map.Entry<Integer, String> answer : quizData.getAnswers()) {
+            Button button = new Button(this);
+            button.setText(answer.getValue());
+            button.setId(answer.getKey()); //こんなことしていいのかな？
+
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    answer(v.getId());
+                }
+            });
+
+            //ボタンをlayoutに追加
+            layout.addView(button);
+        }
+    }
+
+    private void answer(int id) {
+        int correctAnswerId = QuizData.answerAndMoveToNextQuestion(id); //答えて、正解の答えのidを取得する
+
+        //TODO 正解・不正解の表示
+
+        QuizData quizData = QuizData.getQuizData();
+        if (quizData == null) {
+            //TODO 結果のalertFragmentを表示
+        }
+        else {
+            showQuestionData(quizData); //次の問題を取得して画面に表示する
+        }
     }
 
     private void loadQuizData() {

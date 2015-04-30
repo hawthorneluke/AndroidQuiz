@@ -92,9 +92,9 @@ public class AnswerData {
      * @param id  答え群の中の答えのid
      * @return true = 正解。false = 不正解。
      */
-    public boolean answer(int id){
+    public int answer(int id){
         chosenAnswer = id;
-        return chosenAnswer == correctAnswer;
+        return correctAnswer;
     }
 
 }

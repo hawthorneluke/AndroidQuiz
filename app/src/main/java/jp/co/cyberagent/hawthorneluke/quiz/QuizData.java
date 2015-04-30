@@ -89,9 +89,13 @@ public class QuizData {
 
     /**
      * 次の質問のデータを返す。
-     * @return 次の質問のデータ
+     * @return 次の質問のデータ。もう次の問題がないならnullを返す。
      */
-    public static QuizData getQuestion() {
+    public static QuizData getQuizData() {
+        if (QuizData.answeredCount >= QuizData.list.size()) {
+            return null;
+        }
+
         return QuizData.list.get(QuizData.answeredCount);
     }
 
@@ -101,9 +105,16 @@ public class QuizData {
      * @param id 答え群の中の答えのid
      * @return true = 正解。false = 不正解。
      */
-    public static boolean answerAndMoveToNextQuestion(int id) {
-        QuizData data = QuizData.list.get(QuizData.answeredCount);
-        QuizData.answeredCount++;
+    public static int answerAndMoveToNextQuestion(int id) {
+        if (QuizData.answeredCount < QuizData.list.size()) {
+            QuizData.answeredCount++;
+        }
+
+        QuizData data = QuizData.list.get(QuizData.answeredCount - 1);
+        if (data == null) {
+            return 0;
+        }
+
         return data.answers.answer(id);
     }
 
@@ -143,7 +154,7 @@ public class QuizData {
      * この質問に対する答え群の文字列を返す。
      * @return 答えのidにその答えの文字列から出来たエントリのリスト
      */
-    public List<Map.Entry<Integer, String>> getAnswerStrings() {
+    public List<Map.Entry<Integer, String>> getAnswers() {
         return answers.getAnswerStrings();
     }
 
@@ -153,5 +164,21 @@ public class QuizData {
      */
     public int getAnswerCount() {
         return answers.count();
+    }
+
+    /**
+     * こん問題の問題文を返す。
+     * @return 問題文
+     */
+    public String getQuestion() {
+        return question;
+    }
+
+    /**
+     * この問題の解説文を返す。
+     * @return 解説文
+     */
+    public String getExplanation() {
+        return explanation;
     }
 }
