@@ -3,6 +3,7 @@ package jp.co.cyberagent.hawthorneluke.quiz;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -21,8 +22,11 @@ import java.util.Map;
  */
 public class QuizActivity extends AppCompatActivity {
 
+    private static final int WAIT_TIME = 2000; //答えた後、次の問題に移るまでの時間(ms)
+
     private TextView mQuestionNumberText; //何問目の問題か
     private TextView mQuestionText; //問題文
+    private LinearLayout mAnswersLayout; //答えが存在するlayout
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +52,8 @@ public class QuizActivity extends AppCompatActivity {
         mQuestionText.setText(quizData.getQuestion()); //問題文を表示
 
         //ボタンとして各答えを画面に追加
-        LinearLayout layout = (LinearLayout) findViewById(R.id.layout_quiz_answer_buttons); //ここに追加
-        layout.removeAllViewsInLayout(); //ボタンが既に追加されていたら全てを消す。
+        mAnswersLayout = (LinearLayout) findViewById(R.id.layout_quiz_answer_buttons); //ここに追加
+        mAnswersLayout.removeAllViewsInLayout(); //ボタンが既に追加されていたら全てを消す。
         for(Map.Entry<Integer, String> answer : quizData.getAnswers()) {
             Button button = new Button(this);
             button.setText(answer.getValue());
@@ -63,35 +67,55 @@ public class QuizActivity extends AppCompatActivity {
             });
 
             //ボタンをlayoutに追加
-            layout.addView(button);
+            mAnswersLayout.addView(button);
         }
     }
 
     private void answer(int id) {
+        //全てのボタンを洗濯不可にする
+        for(int i = 0; i<mAnswersLayout.getChildCount(); i++) {
+            View child = mAnswersLayout.getChildAt(i);
+            child.setEnabled(false);
+        }
+
         int correctAnswerId = QuizData.answerAndMoveToNextQuestion(id); //答えて、正解の答えのidを取得する
 
-        //TODO 正解・不正解の表示
+        //ユーザが選んだボタンを正解のボタンを取得
+        Button buttonCorrect = (Button)mAnswersLayout.findViewById(correctAnswerId);
+        Button buttonAnswered = (Button)mAnswersLayout.findViewById(id);
 
-        QuizData quizData = QuizData.getQuizData();
-        if (quizData == null) {
-            //スコアを計算
-            int correctCount = QuizData.getCorrectCount(); //2回無駄に計算させないため
-            String message = "問題数: " + QuizData.getQuestionCount();
-            message += "\n正解数: " + correctCount;
-            message += "\n正解率: " + String.format("%.2f%%", ((double)correctCount / (double)QuizData.getQuestionCount() * 100));
+        //正解・不正解の表示
+        if (correctAnswerId != id) {
+            buttonAnswered.setText("X " + buttonAnswered.getText());
+        }
+        buttonCorrect.setText("O " + buttonCorrect.getText());
 
-            //結果のalertFragmentを表示
-            FragmentManager fm = getSupportFragmentManager();
-            ScoreDialogFragment dialog = new ScoreDialogFragment();
-            Bundle args = new Bundle();
-            args.putString("title", getResources().getString(R.string.score_dialog_title));
-            args.putString("message", message);
-            dialog.setArguments(args);
-            dialog.show(fm, "score_dialog_fragment");
-        }
-        else {
-            showQuestionData(quizData); //次の問題を取得して画面に表示する
-        }
+        //時間を待つ
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                QuizData quizData = QuizData.getQuizData();
+                if (quizData == null) {
+                    //スコアを計算
+                    int correctCount = QuizData.getCorrectCount(); //2回無駄に計算させないため
+                    String message = "問題数: " + QuizData.getQuestionCount();
+                    message += "\n正解数: " + correctCount;
+                    message += "\n正解率: " + String.format("%.2f%%", ((double)correctCount / (double)QuizData.getQuestionCount() * 100));
+
+                    //結果のalertFragmentを表示
+                    FragmentManager fm = getSupportFragmentManager();
+                    ScoreDialogFragment dialog = new ScoreDialogFragment();
+                    Bundle args = new Bundle();
+                    args.putString("title", getResources().getString(R.string.score_dialog_title));
+                    args.putString("message", message);
+                    dialog.setArguments(args);
+                    dialog.show(fm, "score_dialog_fragment");
+                }
+                else {
+                    showQuestionData(quizData); //次の問題を取得して画面に表示する
+                }
+            }
+        }, WAIT_TIME);
     }
 
     private void loadQuizData() {
@@ -158,14 +182,14 @@ public class QuizActivity extends AppCompatActivity {
                     .setPositiveButton(getResources().getString(R.string.score_dialog_go_to_explanation),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
-
+                                    //TODO 解説へ
                                 }
                             }
                     )
                     .setNegativeButton(getResources().getString(R.string.score_dialog_return_to_top),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
-                                    getActivity().finish();
+                                    getActivity().finish(); //終わりにする
                                 }
                             }
                     )
