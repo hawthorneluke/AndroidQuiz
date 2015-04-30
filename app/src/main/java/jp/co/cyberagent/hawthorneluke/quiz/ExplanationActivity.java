@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 
 public class ExplanationActivity extends AppCompatActivity {
 
+    //TODO ViewPagerを使って、問題の問題文、選ばれた答え、正解の答え、解説文を表示する
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

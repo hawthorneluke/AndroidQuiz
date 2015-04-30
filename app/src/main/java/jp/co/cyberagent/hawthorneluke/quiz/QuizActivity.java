@@ -34,16 +34,24 @@ public class QuizActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
 
-        if (QuizData.getQuestionCount() == 0) {
-            loadQuizData();
-        }
-
         mQuestionNumberText = (TextView)findViewById(R.id.text_question_number);
         mQuestionText = (TextView)findViewById(R.id.text_quiz_question);
 
-        QuizData quizData = QuizData.getQuizData();
+
+        //最初からなら
+        if (savedInstanceState == null) {
+            QuizData.reset();
+
+            //まだ問題のデータがロードされてないなら
+            if (QuizData.getQuestionCount() == 0) {
+                loadQuizData();
+            }
+        }
+
+        //１最初の問題を取得して画面に表示する
+        QuizData quizData = QuizData.getCurrentQuizData();
         if (quizData != null) {
-            showQuestionData(QuizData.getQuizData()); //１最初の問題を取得して画面に表示する
+            showQuestionData(quizData);
         }
     }
 
@@ -95,7 +103,7 @@ public class QuizActivity extends AppCompatActivity {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                QuizData quizData = QuizData.getQuizData();
+                QuizData quizData = QuizData.getCurrentQuizData();
                 if (quizData == null) {
                     showScore();
                 }

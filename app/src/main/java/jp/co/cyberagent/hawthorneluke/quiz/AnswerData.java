@@ -1,5 +1,6 @@
 package jp.co.cyberagent.hawthorneluke.quiz;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -53,7 +54,7 @@ public class AnswerData {
 
     /**
      * * この答え群の各答えとそのidを返す。
-     * @return 答えのidにその答えに文字列のエントリのリスト
+     * @return 答えのidにその答えの文字列のエントリのリスト
      */
     public List<Map.Entry<Integer, String>>  getAnswerStrings() {
         List<Map.Entry<Integer, String>> list = new ArrayList<>(answerStrings.entrySet());
@@ -62,6 +63,22 @@ public class AnswerData {
         }
 
         return list;
+    }
+
+    /**
+     * この答え群の中の正解の答えとそのidを返す。
+     * @return 答えのidにその答えの文字列のエントリ
+     */
+    public Map.Entry<Integer, String> getCorrectAnswerString() {
+        return new AbstractMap.SimpleEntry<Integer, String>(correctAnswer, answerStrings.get(correctAnswer));
+    }
+
+    /**
+     * この答え群の中の選ばれた答えとそのidを返す。
+     * @return 答えのidにその答えの文字列のエントリ
+     */
+    public Map.Entry<Integer, String> getChosenAnswerString() {
+        return new AbstractMap.SimpleEntry<Integer, String>(chosenAnswer, answerStrings.get(chosenAnswer));
     }
 
     /**

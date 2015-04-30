@@ -62,8 +62,8 @@ public class QuizData {
     }
 
     /**
-     * 正しく答えた質問の数を返す。
-     * @return 正しく答えた質問の数
+     * 正しく答えた問題の数を返す。
+     * @return 正しく答えた問題の数
      */
     public static int getCorrectCount() {
         int n = 0;
@@ -88,10 +88,10 @@ public class QuizData {
     }
 
     /**
-     * 次の質問のデータを返す。
-     * @return 次の質問のデータ。もう次の問題がないならnullを返す。
+     * 次の問題のデータを返す。
+     * @return 次の問題のデータ。もう次の問題がないならnullを返す。
      */
-    public static QuizData getQuizData() {
+    public static QuizData getCurrentQuizData() {
         if (QuizData.answeredCount >= QuizData.list.size()) {
             return null;
         }
@@ -100,8 +100,21 @@ public class QuizData {
     }
 
     /**
-     * この質問の答えを選ぶ。
-     * これでgetQuestionメソッドによって次の質問のデータを得られる。
+     * 指定した問題のデータを返す。
+     * @param pos 0から、何番目の問題か
+     * @return 問題のデータ。存在しないならnullを返す。
+     */
+    public static QuizData getQuizData(int pos) {
+        if (pos < 0 || pos >= QuizData.list.size()) {
+            return null;
+        }
+
+        return QuizData.list.get(pos);
+    }
+
+    /**
+     * この問題の答えを選ぶ。
+     * これでgetQuestionメソッドによって次の問題のデータを得られる。
      * @param id 答え群の中の答えのid
      * @return true = 正解。false = 不正解。
      */
@@ -119,7 +132,7 @@ public class QuizData {
     }
 
     /**
-     * 質問を追加する。
+     * 問題を追加する。
      * @param question 問題文
      * @param answers 答えのデータ
      * @param explanation 解説文
@@ -129,7 +142,7 @@ public class QuizData {
     }
 
     /**
-     * 質問の順番をランダムにする。
+     * 問題の順番をランダムにする。
      */
     public static void randomizeQuestions() {
         Collections.shuffle(QuizData.list);
@@ -151,7 +164,7 @@ public class QuizData {
     }
 
     /**
-     * この質問に対する答え群の文字列を返す。
+     * この問題に対する答え群の文字列を返す。
      * @return 答えのidにその答えの文字列から出来たエントリのリスト
      */
     public List<Map.Entry<Integer, String>> getAnswers() {
@@ -159,7 +172,23 @@ public class QuizData {
     }
 
     /**
-     * この質問に対する答えの数を返す。
+     * この問題に対する正解の答えの文字列を返す。
+     * @return　答えのidにその答えの文字列から出来たエントリ
+     */
+    public Map.Entry<Integer, String> getCorrectAnswer() {
+        return answers.getCorrectAnswerString();
+    }
+
+    /**
+     * この問題に対する選ばれた答えの文字列を返す。
+     * @return　答えのidにその答えの文字列から出来たエントリ
+     */
+    public Map.Entry<Integer, String> getChosenAnswer() {
+        return answers.getChosenAnswerString();
+    }
+
+    /**
+     * この問題に対する答えの数を返す。
      * @return 答えの数
      */
     public int getAnswerCount() {
