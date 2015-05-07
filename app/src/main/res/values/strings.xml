@@ -12,10 +12,9 @@
     <string name="score_dialog_title">結果</string>
     <string name="score_dialog_go_to_explanation">解説へ</string>
     <string name="score_dialog_return_to_top">TOPに戻る</string>
-    <string name="title_activity_explanation">ExplanationActivity</string>
 
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="text_correct_answer">正解の答え:</string>
     <string name="text_your_answer">あなたの答え:</string>
+
+    <string name="explanation_question_number">第%1$d問</string>
 </resources>

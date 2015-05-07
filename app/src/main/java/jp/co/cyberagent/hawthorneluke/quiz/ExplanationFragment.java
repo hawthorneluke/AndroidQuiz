@@ -108,7 +108,7 @@ public class ExplanationFragment extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
             //ユーザに見えたなら何問目かとトーストで知らせる
-            Toast.makeText(getActivity(), "第" + mQuestionNumber + "問", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), getResources().getString(R.string.explanation_question_number, mQuestionNumber), Toast.LENGTH_SHORT).show();
         }
     }
 }
