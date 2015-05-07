@@ -86,6 +86,7 @@ public class QuizActivity extends AppCompatActivity {
             //ボタンを作る
             Button button = new Button(this);
             button.setTextColor(getResources().getColor(R.color.text));
+            button.setTextSize(12);
             button.setText(answer.getValue());
 
             //ボタンのレイアウト
@@ -139,6 +140,7 @@ public class QuizActivity extends AppCompatActivity {
             params.height = BUTTON_HEIGHT;
             //noinspection SuspiciousNameCombination
             params.width = params.height; //正方形だから
+            params.gravity = Gravity.CENTER;
             params.setMargins(-BUTTON_HEIGHT, 0, 0, 0); //左に画像が入ってくるから
             image.setLayoutParams(params);
             image.setImageResource(R.mipmap.batu);
@@ -151,6 +153,7 @@ public class QuizActivity extends AppCompatActivity {
         params.height = BUTTON_HEIGHT;
         //noinspection SuspiciousNameCombination
         params.width = params.height; //正方形だから
+        params.gravity = Gravity.CENTER;
         params.setMargins(-BUTTON_HEIGHT, 0, 0, 0); //左に画像が入ってくるから
         image.setLayoutParams(params);
         image.setImageResource(R.mipmap.maru);
@@ -176,6 +179,7 @@ public class QuizActivity extends AppCompatActivity {
      */
     private void showScore() {
         //スコアを計算
+        //TODO res/stringへ
         int correctCount = QuizData.getCorrectCount(); //2回無駄に計算させないため
         String message = "問題数: " + QuizData.getQuestionCount();
         message += "\n正解数: " + correctCount;
