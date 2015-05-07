@@ -1,106 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="問題文"
-        android:id="@+id/text_explanation_question"
-        android:layout_gravity="center_horizontal"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="解説文"
-        android:id="@+id/text_explanation_explanation"
-        android:layout_gravity="center_horizontal"
-        android:background="#00ffffff"
-        android:layout_below="@+id/linearLayout"
-        android:layout_alignLeft="@+id/text_explanation_question"
-        android:layout_alignStart="@+id/text_explanation_question"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp" />
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/linearLayout"
-        android:layout_below="@+id/text_explanation_question"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="20dp"
+        android:background="@color/text_background">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/text_your_answer"
-            android:id="@+id/text_explanation_your_answer_label"
-            android:layout_below="@+id/text_explanation_correct_answer"
+            android:text="問題文"
+            android:id="@+id/text_explanation_question"
+            android:layout_gravity="center_horizontal"
+            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginRight="10dp" />
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/text" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="あなたの答え"
-            android:id="@+id/text_explanation_your_answer"
+            android:text="解説文"
+            android:id="@+id/text_explanation_explanation"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="61dp"
-            android:layout_below="@+id/text_explanation_question"
-            android:layout_centerHorizontal="true" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/linearLayout2"
-        android:layout_alignBottom="@+id/linearLayout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/text_correct_answer"
-            android:id="@+id/text_explanation_correct_answer_label"
-            android:layout_above="@+id/linearLayout"
-            android:layout_alignRight="@+id/linearLayout"
-            android:layout_alignEnd="@+id/linearLayout"
-            android:layout_marginRight="10dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="正解の答え"
-            android:id="@+id/text_explanation_correct_answer"
-            android:layout_gravity="center_horizontal"
-            android:layout_above="@+id/linearLayout2"
+            android:background="#00ffffff"
+            android:layout_below="@+id/linearLayout"
             android:layout_alignLeft="@+id/text_explanation_question"
-            android:layout_alignStart="@+id/text_explanation_question" />
+            android:layout_alignStart="@+id/text_explanation_question"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/text" />
 
-    </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayout"
+            android:layout_below="@+id/text_explanation_question"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
 
-</RelativeLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/text_your_answer"
+                android:id="@+id/text_explanation_your_answer_label"
+                android:layout_below="@+id/text_explanation_correct_answer"
+                android:layout_centerHorizontal="true"
+                android:layout_marginRight="10dp"
+                android:textColor="@color/text" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="あなたの答え"
+                android:id="@+id/text_explanation_your_answer"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="61dp"
+                android:layout_below="@+id/text_explanation_question"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/text" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayout2"
+            android:layout_alignBottom="@+id/linearLayout"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/text_correct_answer"
+                android:id="@+id/text_explanation_correct_answer_label"
+                android:layout_above="@+id/linearLayout"
+                android:layout_alignRight="@+id/linearLayout"
+                android:layout_alignEnd="@+id/linearLayout"
+                android:layout_marginRight="10dp"
+                android:textColor="@color/text" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="正解の答え"
+                android:id="@+id/text_explanation_correct_answer"
+                android:layout_gravity="center_horizontal"
+                android:layout_above="@+id/linearLayout2"
+                android:layout_alignLeft="@+id/text_explanation_question"
+                android:layout_alignStart="@+id/text_explanation_question"
+                android:textColor="@color/text" />
+
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

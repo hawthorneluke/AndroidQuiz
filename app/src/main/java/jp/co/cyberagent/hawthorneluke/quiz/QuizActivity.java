@@ -68,6 +68,7 @@ public class QuizActivity extends AppCompatActivity {
         mAnswersLayout.removeAllViewsInLayout(); //ボタンが既に追加されていたら全てを消す。
         for(Map.Entry<Integer, String> answer : quizData.getAnswers()) {
             Button button = new Button(this);
+            button.setTextColor(getResources().getColor(R.color.text));
             button.setText(answer.getValue());
             button.setId(answer.getKey()); //こんなことしていいのかな？
 
