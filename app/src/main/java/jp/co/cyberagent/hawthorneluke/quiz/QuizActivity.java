@@ -31,7 +31,7 @@ public class QuizActivity extends AppCompatActivity {
     private static final int BUTTON_WIDTH = 350; //ボタンの幅
     private static final int BUTTON_HEIGHT = 80; //ボタンの高さ（まる・ばつの図の幅と高さもこの値になる）
 
-    private Map<Integer, View> buttonList = new HashMap<>(); //ボタンを持つLinearLayouはどのボタン・答えのidに対応してるか格納する
+    private Map<Integer, View> mButtonList = new HashMap<>(); //ボタンを持つLinearLayouはどのボタン・答えのidに対応してるか格納する
 
     private TextView mQuestionNumberText; //何問目の問題か
     private TextView mQuestionText; //問題文
@@ -75,13 +75,13 @@ public class QuizActivity extends AppCompatActivity {
 
         //ボタンとして各答えを画面に追加
         mAnswersLayout.removeAllViewsInLayout(); //ボタンが既に追加されていたら全てを消す。
-        buttonList.clear();
+        mButtonList.clear();
         for(Map.Entry<Integer, String> answer : quizData.getAnswers()) {
             //ボタンとまる・ばつを持つLinearLayoutを作る
             LinearLayout row = new LinearLayout(this);
             row.setOrientation(LinearLayout.HORIZONTAL);
             row.setGravity(Gravity.CENTER_HORIZONTAL);
-            buttonList.put(answer.getKey(), row); //このLinearLayoutはどのidに対応してるかを記録
+            mButtonList.put(answer.getKey(), row); //このLinearLayoutはどのidに対応してるかを記録
 
             //ボタンを作る
             Button button = new Button(this);
@@ -128,8 +128,8 @@ public class QuizActivity extends AppCompatActivity {
         int correctAnswerId = QuizData.answerAndMoveToNextQuestion(id); //答えて、正解の答えのidを取得する
 
         //ユーザが選んだボタンと正解のボタンを持つLinearLayoutを取得
-        LinearLayout rowCorrect = (LinearLayout)buttonList.get(correctAnswerId);
-        LinearLayout rowAnswered = (LinearLayout)buttonList.get(id);
+        LinearLayout rowCorrect = (LinearLayout)mButtonList.get(correctAnswerId);
+        LinearLayout rowAnswered = (LinearLayout)mButtonList.get(id);
 
 
         //不正解の表示
