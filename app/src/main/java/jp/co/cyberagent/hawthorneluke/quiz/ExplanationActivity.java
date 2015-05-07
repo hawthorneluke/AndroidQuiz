@@ -15,9 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
+/**
+ * 解説をViewPageで表示するためのActivity
+ */
 public class ExplanationActivity extends AppCompatActivity {
-
-    //TODO ViewPagerを使って、問題の問題文、選ばれた答え、正解の答え、解説文を表示する
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -34,6 +35,8 @@ public class ExplanationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explanation);
+
+        setTitle(R.string.title_explanation);
 
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager_explanation);
@@ -66,24 +69,33 @@ public class ExplanationActivity extends AppCompatActivity {
     }
 
     /**
-     * A simple pager adapter that represents 5 ScreenSlidePageFragment objects, in
-     * sequence.
+     * 各解説のページを表示するFragmentStatePagerAdapter
      */
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
         public ScreenSlidePagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
+        /**
+         * ページを取得
+         * @param position 何ページ（問）目
+         * @return そのページとなるフラグメント
+         */
         @Override
         public Fragment getItem(int position) {
-            QuizData quizData = QuizData.getQuizData(position);
+            QuizData quizData = QuizData.getQuizData(position); //このページのデータを取得
             if (quizData == null) {
-                return null;
+                throw new NullPointerException("No QuizData for position :" + position);
             }
 
+            //取得したデータで新しいページのフラグメントを作る
             return ExplanationFragment.newInstance((position + 1), quizData.getQuestion(), quizData.getChosenAnswer().getValue(), quizData.getCorrectAnswer().getValue(), quizData.getExplanation());
         }
 
+        /**
+         * ページの総ページ数を返す
+         * @return 総ページ数
+         */
         @Override
         public int getCount() {
             return QuizData.getQuestionCount();

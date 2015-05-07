@@ -10,24 +10,25 @@ import android.widget.Toast;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link ExplanationFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * 解説の各ページとなるフラグメント
+ * これがViewPageのページの１つになる
  */
 public class ExplanationFragment extends Fragment {
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    //渡されたデータを取り出すための引数名
     private static final String ARG_QUESTION_NUMBER = "questionNumber";
     private static final String ARG_QUESTION = "question";
     private static final String ARG_YOUR_ANSWER = "yourAnswer";
     private static final String ARG_CORRECT_ANSWER = "correctAnswer";
     private static final String ARG_EXPLANATION = "explanation";
 
+    //このページに表示するデータ
     private int mQuestionNumber;
     private String mQuestion;
     private String mYourAnswer;
     private String mCorrectAnswer;
     private String mExplanation;
 
+    //レイアウトのウィジェット
     private TextView mTextQuestion;
     private TextView mTextYourAnswer;
     private TextView mTextCorrectAnswer;
@@ -44,7 +45,6 @@ public class ExplanationFragment extends Fragment {
      * @param explanation 解説文
      * @return A new instance of fragment ExplanationFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static ExplanationFragment newInstance(int questionNumber, String question, String yourAnswer, String correctAnswer, String explanation) {
         ExplanationFragment fragment = new ExplanationFragment();
 

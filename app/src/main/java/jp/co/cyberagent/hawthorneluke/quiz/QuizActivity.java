@@ -5,17 +5,21 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -23,7 +27,11 @@ import java.util.Map;
  */
 public class QuizActivity extends AppCompatActivity {
 
-    private static final int WAIT_TIME = 100; //答えた後、次の問題に移るまでの時間(ms)
+    private static final int WAIT_TIME = 2000; //答えた後、次の問題に移るまでの時間(ms)
+    private static final int BUTTON_WIDTH = 350; //ボタンの幅
+    private static final int BUTTON_HEIGHT = 80; //ボタンの高さ（まる・ばつの図の幅と高さもこの値になる）
+
+    private Map<Integer, View> buttonList = new HashMap<>(); //ボタンを持つLinearLayouはどのボタン・答えのidに対応してるか格納する
 
     private TextView mQuestionNumberText; //何問目の問題か
     private TextView mQuestionText; //問題文
@@ -36,6 +44,8 @@ public class QuizActivity extends AppCompatActivity {
 
         mQuestionNumberText = (TextView)findViewById(R.id.text_question_number);
         mQuestionText = (TextView)findViewById(R.id.text_quiz_question);
+
+        mAnswersLayout = (LinearLayout) findViewById(R.id.layout_quiz_answer_buttons);
 
 
         //最初からなら
@@ -64,12 +74,28 @@ public class QuizActivity extends AppCompatActivity {
         mQuestionText.setText(quizData.getQuestion()); //問題文を表示
 
         //ボタンとして各答えを画面に追加
-        mAnswersLayout = (LinearLayout) findViewById(R.id.layout_quiz_answer_buttons); //ここに追加
         mAnswersLayout.removeAllViewsInLayout(); //ボタンが既に追加されていたら全てを消す。
+        buttonList.clear();
         for(Map.Entry<Integer, String> answer : quizData.getAnswers()) {
+            //ボタンとまる・ばつを持つLinearLayoutを作る
+            LinearLayout row = new LinearLayout(this);
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            row.setGravity(Gravity.CENTER_HORIZONTAL);
+            buttonList.put(answer.getKey(), row); //このLinearLayoutはどのidに対応してるかを記録
+
+            //ボタンを作る
             Button button = new Button(this);
             button.setTextColor(getResources().getColor(R.color.text));
             button.setText(answer.getValue());
+
+            //ボタンのレイアウト
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.gravity = Gravity.CENTER_HORIZONTAL;
+            button.setLayoutParams(params);
+            button.setWidth(BUTTON_WIDTH);
+            button.setHeight(BUTTON_HEIGHT);
+
+            //ボタンを押した時、そのボタンが連携してる答えのiがわかるように
             button.setId(answer.getKey()); //こんなことしていいのかな？
 
             button.setOnClickListener(new View.OnClickListener() {
@@ -80,28 +106,55 @@ public class QuizActivity extends AppCompatActivity {
             });
 
             //ボタンをlayoutに追加
-            mAnswersLayout.addView(button);
+            row.addView(button);
+            mAnswersLayout.addView(row);
         }
     }
 
+    /**
+     * ボタンをタッチして答える
+     * @param id タッチしたボタンのid(答えのidと同じ)
+     */
     private void answer(int id) {
         //全てのボタンを洗濯不可にする
-        for(int i = 0; i<mAnswersLayout.getChildCount(); i++) {
-            View child = mAnswersLayout.getChildAt(i);
-            child.setEnabled(false);
+        for(int i = 0; i < mAnswersLayout.getChildCount(); i++) {
+            LinearLayout childLayout = (LinearLayout)mAnswersLayout.getChildAt(i);
+            for(int j = 0; j < childLayout.getChildCount(); j++) {
+                View child = childLayout.getChildAt(j);
+                child.setEnabled(false);
+            }
         }
 
         int correctAnswerId = QuizData.answerAndMoveToNextQuestion(id); //答えて、正解の答えのidを取得する
 
-        //ユーザが選んだボタンを正解のボタンを取得
-        Button buttonCorrect = (Button)mAnswersLayout.findViewById(correctAnswerId);
-        Button buttonAnswered = (Button)mAnswersLayout.findViewById(id);
+        //ユーザが選んだボタンと正解のボタンを持つLinearLayoutを取得
+        LinearLayout rowCorrect = (LinearLayout)buttonList.get(correctAnswerId);
+        LinearLayout rowAnswered = (LinearLayout)buttonList.get(id);
 
-        //正解・不正解の表示
+
+        //不正解の表示
         if (correctAnswerId != id) {
-            buttonAnswered.setText("X " + buttonAnswered.getText());
+            ImageView image = new ImageView(this);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.height = BUTTON_HEIGHT;
+            //noinspection SuspiciousNameCombination
+            params.width = params.height; //正方形だから
+            params.setMargins(-BUTTON_HEIGHT, 0, 0, 0); //左に画像が入ってくるから
+            image.setLayoutParams(params);
+            image.setImageResource(R.mipmap.batu);
+            rowAnswered.addView(image, 0);
         }
-        buttonCorrect.setText("O " + buttonCorrect.getText());
+
+        //正解の表示
+        ImageView image = new ImageView(this);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.height = BUTTON_HEIGHT;
+        //noinspection SuspiciousNameCombination
+        params.width = params.height; //正方形だから
+        params.setMargins(-BUTTON_HEIGHT, 0, 0, 0); //左に画像が入ってくるから
+        image.setLayoutParams(params);
+        image.setImageResource(R.mipmap.maru);
+        rowCorrect.addView(image, 0);
 
         //時間を待つ
         Handler handler = new Handler();
@@ -118,6 +171,9 @@ public class QuizActivity extends AppCompatActivity {
         }, WAIT_TIME);
     }
 
+    /**
+     * 最後にスコアをダイアログで表示
+     */
     private void showScore() {
         //スコアを計算
         int correctCount = QuizData.getCorrectCount(); //2回無駄に計算させないため
@@ -135,6 +191,9 @@ public class QuizActivity extends AppCompatActivity {
         dialog.show(fm, "score_dialog_fragment");
     }
 
+    /**
+     * デフォルトのクイズデータをロードする
+     */
     private void loadQuizData() {
         QuizData.addQuestion("お酒に関する言葉で「おにぎす」といえば焼酎のことですが、「にがぎす」といえば何？", new AnswerData("ビール", "焼酎", "ワイン", "お屠蘇"), "きす…酒類一般。\nおにぎす…焼酎・梅酒。\nにがぎす…ビール。\n苦みがあるから。");
         QuizData.addQuestion("これ以上生きるのは珍しいということから「珍寿」と呼ばれるのは何歳以上のお祝い？", new AnswerData("95歳", "81歳", "90歳", "111歳"), "81歳…「盤寿」「半寿」\n90歳…「星寿」「卆寿」\n95歳…「珍寿」\n111歳…「皇寿」");
@@ -168,6 +227,9 @@ public class QuizActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * スコアを表示するためのダイアログフラグメント
+     */
     public static class ScoreDialogFragment extends DialogFragment {
 
         private TextView mText;
@@ -177,6 +239,7 @@ public class QuizActivity extends AppCompatActivity {
         }
 
         @Override
+        @NonNull
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             super.onCreateDialog(savedInstanceState);
 
